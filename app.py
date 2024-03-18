@@ -19,6 +19,7 @@ def other():
 def redirect_endpoint():
     return redirect(url_for('other'))
 
+# filters to amend rendered temlate (made functions to achieve what you need)
 @app.template_filter('reverse_string')
 def reverse_string(s):
     return s[::-1]
