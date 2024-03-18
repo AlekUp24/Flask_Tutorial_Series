@@ -1,43 +1,35 @@
-from flask import Flask, request, make_response
+from flask import Flask, render_template, redirect, url_for
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 @app.route('/')
 def index():
-    return '<h1> Hello World </h1>'
+    my_val = 'Patagonia'
+    my_calc = 10 + 20
+    my_list = [10, 20, 25,30,40,50]
+    return render_template('index.html', myValue = my_val, myCalculation = my_calc, myList = my_list)
 
-@app.route('/hello')
-def hello():
-    response = make_response('Hello World')
-    response.status_code = 202
-    response.headers['content-type']='application/octet-stream'
-    return response
+@app.route('/other')
+def other():
+    some_text = 'Patagonia'
+    return render_template('other.html', some_text = some_text)
 
-@app.route('/greet/<name>')
-def greet(name):
-    return f"Hello {name}"
+# if you call this endpoint it will redirect to others 
+@app.route('/redirect_endpoint')
+def redirect_endpoint():
+    return redirect(url_for('other'))
 
-@app.route('/add/<int:number1>/<int:number2>')
-def add(number1, number2):
-    return f'{number1} + {number2} = {number2+number1}'
+@app.template_filter('reverse_string')
+def reverse_string(s):
+    return s[::-1]
 
-@app.route('/general', methods=['GET','POST'])
-def general():
-    if request.method =='GET':
-        return 'You made get request\n'
-    elif request.method =='POST':
-        return 'You made post request\n'
-    else:
-        return 'You will never see this message'
+@app.template_filter('repeat')
+def reverse_string(s, times):
+    return s*times
 
-@app.route('/handle_url_params')
-def handle_params():
-    if 'greeting' in request.args.keys() and 'name' in request.args.keys():
-        greeting = request.args.get('greeting')
-        name = request.args.get('name')
-        return f"{greeting}, {name}"
-    else:
-        return 'Some parameters are missing...'
+@app.template_filter('alternate_case')
+def reverse_string(s):
+    return ''.join([c.upper() if i % 2 == 0 else c.lower() for i, c in enumerate(s)])
 
 if __name__ == "__main__":
     app.run(debug=True)
