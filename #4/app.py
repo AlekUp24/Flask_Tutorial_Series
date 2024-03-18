@@ -1,5 +1,7 @@
 import pandas as pd
-from flask import Flask, render_template, request, Response
+import os
+import uuid
+from flask import Flask, render_template, request, Response, send_from_directory
 
 
 app = Flask(__name__, template_folder='templates')
@@ -26,11 +28,13 @@ def file_upload():
     else:
         return 'File type not recognized.'
 
+# return a file for download (the same that user uploads is returned to the user in csv form)
 @app.route('/convert_csv', methods=['POST'])
 def convert_csv():
+    
     file = request.files['uploaded_file']
-
     df = pd.read_excel(file)
+    
     response = Response(
         df.to_csv(),
         mimetype='text/csv',
@@ -42,8 +46,27 @@ def convert_csv():
     return response
 
 
+@app.route('/convert_csv_two', methods=['POST'])
+def convert_csv_two():
+    file = request.files['uploaded_file']
+    df = pd.read_excel(file)
+
+    if not os.path.exists('downloads'):
+        os.mkdir('downloads')
+
+    filename = f'{uuid.uuid4()}.csv'
+    df.to_csv(os.path.join('downloads',filename))
+
+    return render_template(template_name_or_list='download.html',filename=filename)
+
+
+@app.route('/download/<filename>')
+def download(filename):
+    return send_from_directory('downloads', filename, download_name='result.csv')
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 
 
-# 20:45 #4
+# 26:20 #4
