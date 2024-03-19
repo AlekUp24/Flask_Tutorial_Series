@@ -36,8 +36,6 @@
           const postButton = document.getElementById("post_button");
           const jsonData = {name: 'Mike', greeting: 'Hello'}
 
-          postButton.addEventListener('click',fetch('{{ url_for("handle_post")}}'))
-
           postButton.addEventListener('click', () => {
                fetch('{{ url_for("handle_post") }}', {
                     method: 'POST',
