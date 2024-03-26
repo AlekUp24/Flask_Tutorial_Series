@@ -5,10 +5,10 @@
 {% block content %}
      <h1>Hello World</h1>
 
-     <a href="#" class="btn btn-primary">Button Text</a>
+     <p>{{ message }}</p>
 
-     <p class="special">Hello</p>
-
-     <script src="/js/hello.js"></script>
+     <a href="{{ url_for('set_data')}}">Set Session Data</a>
+     <a href="{{ url_for('get_data')}}">Get Session Data</a>
+     <a href="{{ url_for('clear_session')}}">Clear Session</a>
 
 {% endblock %}
